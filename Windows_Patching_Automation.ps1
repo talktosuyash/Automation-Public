@@ -66,7 +66,7 @@ $foldercreation = $null
 $foldercreation = @()
 
 
-if($(Get-ChildItem "\\$compname\C$\temp" -Directory).Name -contains "Patching")
+if($(Get-ChildItem "\\$compname\C$\foldername" -Directory).Name -contains "Patching")
 {
 Write-host "Folder Pesent" -BackgroundColor Black -ForegroundColor Yellow
 
@@ -74,7 +74,7 @@ Write-host "Folder Pesent" -BackgroundColor Black -ForegroundColor Yellow
 }
 else{
 
-if($(Get-ChildItem "\\$compname\C$\temp" -Directory).Name -notcontains "Patching"){
+if($(Get-ChildItem "\\$compname\C$\foldername" -Directory).Name -notcontains "Patching"){
 
 Write-host "Folder Not Pesent" -BackgroundColor Black -ForegroundColor Red
 $foldercreation = New-Item -ItemType Directory -Path "\\$compname\C$\temp" -Name Patching -Force -Verbose
@@ -117,8 +117,8 @@ $cabfile = $getcabfile[$i].Name
 
 
 
-$packagepath = "C:\temp\Patching\$folder\$cabfile"
-$logfilepath = "C:\temp\Patching\$folder\$kbdata.log"
+$packagepath = ".\$folder\$cabfile"
+$logfilepath = ".\$folder\$kbdata.log"
 Write-Host "Installing $kbdata in $compname server" 
 $kbinstalloutput = Invoke-Command -ComputerName $compname -ScriptBlock {Add-WindowsPackage -Online -PackagePath $using:packagepath -NoRestart -LogLevel WarningsInfo -LogPath $using:logfilepath}
 
@@ -206,7 +206,7 @@ param($kbname, $compname)
 process{
 
 
-New-Item -ItemType Directory -Path "\\$compname\C$\temp\Patching" -Name $kbname -Force -Verbose
+New-Item -ItemType Directory -Path "\\$compname\C$\Patching" -Name $kbname -Force -Verbose
 
 }
 
@@ -236,9 +236,9 @@ $hotfixoutput, $hotfixcheckoutput,$trimkb = gethotfix -kbcheck $patch.Name -comp
 if($hotfixcheckoutput -eq "Not Present")
 {
 $source = $sourcekbshare + $($patch.Name)
-$destination = "\\$computername\C$\Temp\Patching\$trimkb\$($patch.Name)"
-$destination2 = "\\$computername\C$\Temp\Patching\$trimkb\"
-$dest3 = "C:\Temp\Patching\$trimkb\$($patch.Name)"
+$destination = "\\$computername\C$\Patching\$trimkb\$($patch.Name)"
+$destination2 = "\\$computername\C$\patching\$trimkb\"
+$dest3 = ".\$trimkb\$($patch.Name)"
 
 if($ostype -match 2016)
 {
